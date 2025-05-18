@@ -1,0 +1,30 @@
+# macOS system files
+.DS_Store
+
+# Node modules (if ever used for tooling)
+node_modules/
+
+# Log files
+*.log
+
+# Build output (if any static site generator is used in the future)
+dist/
+build/
+
+# Cache
+.cache/
+
+# Audio files (if you don't want to track large media)
+music/*.m4a
+
+# Image cache or temp
+*.tmp
+*.swp
+
+# VSCode settings
+.vscode/
+
+# Ignore by default, but keep art/ and music/ images if you want to track them
+# !art/*.png
+# !art/*.jpeg
+# !music/*.m4a 

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>benjamin nashel</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { margin: 0; background: #fff; font-family: Helvetica, Arial, sans-serif; }
+    #animation-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
+    .title { position: fixed; top: 8vh; left: 0; width: 100vw; font-size: 2.2rem; color: #111; letter-spacing: 0.04em; text-transform: lowercase; text-align: center; z-index: 2; background: transparent; }
+    .nav { position: fixed; bottom: 2.5rem; left: 0; width: 100vw; display: flex; flex-direction: column; gap: 1.2rem; align-items: center; z-index: 2; }
+    .nav a { font-size: 1.2rem; color: #111; text-decoration: underline; text-transform: lowercase; background: none; border: none; cursor: pointer; font-family: Helvetica, Arial, sans-serif; }
+    .content { width: 100vw; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; position: relative; }
+  </style>
+</head>
+<body>
+  <div class="title" id="typing-title"></div>
+  <div id="animation-bg"></div>
+  <nav class="nav">
+    <a href="about.html">about me</a>
+    <a href="about.html#movies-books">movies + books</a>
+    <a href="art.html">art</a>
+    <a href="music.html">music</a>
+  </nav>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script>
+    // Animation from merging_spheres_consciousness.html, adapted for background
+    const container = document.getElementById('animation-bg');
+    const renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setClearColor(0xffffff); // pure white
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.z = 9;
+    const light1 = new THREE.PointLight(0xff00ff, 2.5, 100);
+    light1.position.set(4, 4, 6);
+    const light2 = new THREE.PointLight(0x00ffff, 2.5, 100);
+    light2.position.set(-4, -4, 6);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.5);
+    scene.add(light1, light2, ambient);
+    const group = new THREE.Group();
+    scene.add(group);
+    const geometry = new THREE.SphereGeometry(1.4, 128, 128);
+    const vertexCount = geometry.attributes.position.count;
+    const initialPositions = new Float32Array(geometry.attributes.position.array);
+    const colors = new Float32Array(vertexCount * 3);
+    for (let i = 0; i < vertexCount; i++) {
+      const y = initialPositions[i * 3 + 1];
+      const hue = 0.82 + 0.18 * (y + 1.4) / 2.8;
+      const color = new THREE.Color().setHSL(hue % 1, 1.0, 0.7);
+      colors.set([color.r, color.g, color.b], i * 3);
+    }
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    const material = new THREE.MeshStandardMaterial({
+      vertexColors: true,
+      roughness: 0.2,
+      metalness: 0.4,
+      transparent: true,
+      opacity: 0.95
+    });
+    const mesh = new THREE.Mesh(geometry.clone(), material);
+    mesh.userData = { initialPositions };
+    group.add(mesh);
+    function distortVertex(x, y, z, t, separation) {
+      const r = Math.sqrt(x * x + y * y + z * z);
+      const theta = Math.atan2(y, x);
+      const phi = Math.acos(z / r);
+      const blend = 0.5 * (1 + Math.cos(separation));
+      const pulse = Math.sin(t * 0.4 + phi * 2) * 0.3 * blend;
+      const swirl = Math.cos(r * 3 - t * 0.6) * 0.2 * (1 - blend);
+      const newR = r + pulse + swirl;
+      return [
+        newR * Math.sin(phi) * Math.cos(theta),
+        newR * Math.sin(phi) * Math.sin(theta),
+        newR * Math.cos(phi)
+      ];
+    }
+    function animate(time) {
+      const t = time * 0.001;
+      const separation = Math.sin(t * 0.6) * 2.5;
+      const geo = mesh.geometry;
+      const pos = geo.attributes.position;
+      const { initialPositions } = mesh.userData;
+      for (let i = 0; i < vertexCount; i++) {
+        const ix = i * 3;
+        const [x, y, z] = [initialPositions[ix], initialPositions[ix+1], initialPositions[ix+2]];
+        const [nx, ny, nz] = distortVertex(x, y, z, t, separation);
+        pos.array[ix] = nx;
+        pos.array[ix+1] = ny;
+        pos.array[ix+2] = nz;
+      }
+      pos.needsUpdate = true;
+      mesh.scale.x = 1 + 0.4 * Math.sin(t * 0.6);
+      mesh.scale.y = 1 - 0.2 * Math.sin(t * 0.6);
+      mesh.scale.z = 1 + 0.3 * Math.cos(t * 0.4);
+      mesh.rotation.x += 0.0015;
+      mesh.rotation.y += 0.001;
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate(0);
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html> 

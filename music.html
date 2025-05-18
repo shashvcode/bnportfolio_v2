@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>benjamin nashel</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .tracklist { max-width: 600px; margin: 2.5rem auto; font-size: 1.1rem; line-height: 2.2; }
+    .track-link { color: #111; text-decoration: underline; cursor: pointer; font-family: Helvetica, Arial, sans-serif; background: none; border: none; font-size: 1.1rem; padding: 0; }
+    .audio-player { display: none; margin: 0.5rem 0 1.5rem 0; width: 100%; }
+    .track { margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="content fade-in">
+    <div class="section-title">a selection of ambient music i've composed in my free time:</div>
+    <div class="tracklist">
+      <div class="track">
+        <button class="track-link" onclick="playTrack(0)">blue wave</button>: logic, felt piano, sync bass
+        <audio class="audio-player" src="music/Blue Wave.m4a" controls preload="none"></audio>
+      </div>
+      <div class="track">
+        <button class="track-link" onclick="playTrack(1)">drum buddy</button>: one of a kind rhythm module
+        <audio class="audio-player" src="music/Drum Buddy long H 011024.m4a" controls preload="none"></audio>
+      </div>
+      <div class="track">
+        <button class="track-link" onclick="playTrack(2)">morning phase</button>: freq shifting in logic, felt piano, moog
+        <audio class="audio-player" src="music/Morning Phase.m4a" controls preload="none"></audio>
+      </div>
+      <div class="track">
+        <button class="track-link" onclick="playTrack(3)">the golden god</button>: distorted moog, heavy bass
+        <audio class="audio-player" src="music/The Golden God.m4a" controls preload="none"></audio>
+      </div>
+      <div class="track">
+        <button class="track-link" onclick="playTrack(4)">the inevitable cycle</button>: violin, trumpet, felt piano
+        <audio class="audio-player" src="music/The Inevitable Cycle.m4a" controls preload="none"></audio>
+      </div>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="index.html">home</a>
+    <a href="about.html">about me</a>
+    <a href="about.html#movies-books">movies + books</a>
+    <a href="art.html">art</a>
+  </nav>
+  <script src="script.js"></script>
+  <script>
+    function playTrack(idx) {
+      const players = document.querySelectorAll('.audio-player');
+      players.forEach((audio, i) => {
+        if (i === idx) {
+          audio.style.display = 'block';
+          audio.play();
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html> 
