@@ -1,6 +1,6 @@
 # benjamin nashel – portfolio
 
-this is a clean, minimalist portfolio website for benjamin nashel, built by shashi verma.
+this is a clean, minimalist portfolio website for benjamin nashel.
 
 ## overview
 - lowercase only, helvetica font, white background
